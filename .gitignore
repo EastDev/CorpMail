@@ -18,9 +18,10 @@ $RECYCLE.BIN/
 *.lnk
 
 # =========================
-# Visual Studio Directories
+# Visual Studio
 # =========================
 .vs
+*.suo
 
 # OSX
 # =========================
@@ -46,4 +47,3 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
-*.suo
