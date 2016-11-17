@@ -18,8 +18,9 @@ $RECYCLE.BIN/
 *.lnk
 
 # =========================
-# Operating System Files
+# Visual Studio Files
 # =========================
+.vs
 
 # OSX
 # =========================
