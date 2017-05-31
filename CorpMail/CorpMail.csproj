@@ -192,6 +192,9 @@
     <None Include="Resources\GPLv3_Logo.svg.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Руководство пользователя.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\logo.png" />
     <Content Include="email.ico" />
     <Content Include="tinymce\jquery.tinymce.min.js" />
@@ -275,9 +278,6 @@
     <Content Include="tinymce\themes\modern\theme.min.js" />
     <Content Include="tinymce\tinymce.html" />
     <Content Include="tinymce\tinymce.min.js" />
-    <Content Include="Руководство пользователя.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

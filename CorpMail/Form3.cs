@@ -8,13 +8,16 @@ using Zender.Mail; //либа, управляющая Zender
 using System.IO; //либа, управляющая последней сессией
 using System.Text.RegularExpressions; //либа, управляющая парсингом
 using System.Security.Cryptography; //либа, для шифровки/дешифровки последней сессии
+using System.Net; //либа, для отправки POST-запросов на сервер отправки СМС
 
 namespace CorpMail
 {
     public partial class Form3 : Form
     {
         public static List<string> emails = new List<string>(); //init лист для почт
+        public static List<string> tels = new List<string>(); //init лист для телефонов
         public int i = 0; //init счетчик кол-ва почт в прочитанном файле
+        public int t = 0; //init счетчик кол-ва телефонов в прочитанном файле
         public int d = 0; //init счетчик id почты для отправки
         public int s = 0; //init счетчик кол-ва почты для вывода в textbox
         public const int WM_NCLBUTTONDOWN = 0xA1; //двигаем форму
@@ -32,10 +35,43 @@ namespace CorpMail
         private void pictureBox1_Click(object sender, EventArgs e) //закрываем приложение
         {
             string curDir = Directory.GetCurrentDirectory();
-            string writepath = String.Format(@"{0}\last_"+ Form2.index +".session", curDir); //init путь для сохранения сессии
+            string writepath = String.Format(@"{0}\last_email_" + Form2.index + ".session", curDir); //init путь для сохранения сессии
+            string writepath2 = String.Format(@"{0}\last_tel_" + Form2.index + ".session", curDir); //init путь для сохранения сессии
+            textBox2.Text = null; //сброс поля для записи почт
+            s = 0; //сброс счетчика от предыдущих значений
+            while (s != i) //пока кол-во спарсенных значений не равно счетчику почт занесенных в текстбокс
+            {
+                if (s != i - 1) //fix последней пустой строки
+                {
+                    textBox2.Text = textBox2.Text + emails[s] + "\r\n"; //заносим в текстбокс для просмотра
+                }
+                else
+                {
+                    textBox2.Text = textBox2.Text + emails[s]; //заносим в текстбокс последнее значение, без специальных ключей сноса строки
+                }
+                s++; //счетчик значений текстбокса
+            }
             using (StreamWriter sw = new StreamWriter(writepath, false, System.Text.Encoding.Default))
             {
-                sw.Write(Shifrovka(textBox2.Text, password)); //пишем SHA-1 последнюю сессию в last_%pass_number%.session, паролем на шифровку служит пароль, использованный при входе в систему
+                sw.Write(Shifrovka(textBox2.Text, password)); //пишем SHA-1 последнюю сессию в last_email%pass_number%.session, паролем на шифровку служит пароль, использованный при входе в систему
+            }
+            textBox2.Text = null; //сброс поля для записи телефонов
+            s = 0; //сброс счетчика для значений телефона
+            while (s != t) //пока кол-во спарсенных значений не равно счетчику телефонов занесенных в текстбокс
+            {
+                if (s != t - 1) //fix последней пустой строки
+                {
+                    textBox2.Text = textBox2.Text + tels[s] + "\r\n"; //заносим в текстбокс для просмотра
+                }
+                else
+                {
+                    textBox2.Text = textBox2.Text + tels[s]; //заносим в текстбокс последнее значение, без специальных ключей сноса строки
+                }
+                s++; //счетчик значений текстбокса
+            }
+            using (StreamWriter sw = new StreamWriter(writepath2, false, System.Text.Encoding.Default))
+            {
+                sw.Write(Shifrovka(textBox2.Text, password)); //пишем SHA-1 последнюю сессию в last_tel%pass_number%.session, паролем на шифровку служит пароль, использованный при входе в систему
             }
             Application.Exit();
         }
@@ -134,7 +170,7 @@ namespace CorpMail
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedItem == null || textBox1.Text == "Текст сообщения или HTML-код..." || textBox3.Text == "Тема сообщения..." || textBox1.Text == "" || textBox3.Text == "") //фиксит битые значения комбобокса и неотредактированные тема и сообщение
+            if (comboBox1.SelectedItem == null || textBox1.Text == "Текст сообщения..." || textBox3.Text == "Тема сообщения..." || textBox1.Text == "" || textBox3.Text == "") //фиксит битые значения комбобокса и неотредактированные тема и сообщение
             {
                 MessageBox.Show("У вас есть пустые или неотредактированные поля, необходимо заполнить их!");
             }
@@ -153,6 +189,12 @@ namespace CorpMail
                     message.SendMailAsync(); //отправка в zender
                     d++; //счетчик +1 к id почты для отправки
                 }
+                d = 0; //сброс счетчика для расчета телефона
+                while (d != t) //пока счетчик id телефона для отправки смс не равен общему кол-ву телефонов, делаем...
+                {
+                    POST("https://gate.smsaero.ru/send/", "user=dmkhnk@gmail.com&password=CC1CEqAPEzuDcAUZ7Ah39yeYJOSB&to=7" + tels[d] + "&text=" + textBox1.Text + "&from=news");
+                    d++; //счетчик +1 к id телефона для отправки
+                }
                 MessageBox.Show ("Успешно выполнено!");
             }
             else //костыль для предотвращения введения своих значений в комбобокс
@@ -166,7 +208,8 @@ namespace CorpMail
             if (comboBox1.SelectedItem.ToString() == "Последняя сессия") //последняя сессия
             {
                 string curDir = Directory.GetCurrentDirectory();
-                string path = String.Format(@"{0}\last_"+ Form2.index +".session", curDir); //init путь к сохраненной сессии
+                string path = String.Format(@"{0}\last_email_" + Form2.index + ".session", curDir); //init путь к сохраненной сессии
+                string path2 = String.Format(@"{0}\last_tel_" + Form2.index + ".session", curDir); //init путь к сохраненной сессии
                 using (StreamReader sr = new StreamReader(path, System.Text.Encoding.Default)) //читаем последнюю сессию
                 {
                     string line; //init линия в прочитанном файле
@@ -189,15 +232,50 @@ namespace CorpMail
                         i++; //счетчик кол-ва почт в прочитанном файле
                     }
                 }
+                using (StreamReader sr = new StreamReader(path2, System.Text.Encoding.Default)) //читаем последнюю сессию
+                {
+                    string line; //init линия в прочитанном файле
+                    while ((line = sr.ReadLine()) != null) //пока читается, делаем...
+                    {
+                        try //ох уж этот C# | Try-catch method
+                        {
+                            tels.Add(DeShifrovka(line, password)); //добавление почты в глобал лист, дешифруя SHA-1, если это была последняя сессия сего юзера
+                        }
+                        catch (CryptographicException) //ловим ошибку дешифровки при подмене последней сессии и выполняем...
+                        {
+                            MessageBox.Show("Последняя сессия принадлежит другому пользователю! Выполните повторный импорт файла.");
+                            t--; //фикс счетчика, магия, не иначе
+                        }
+                        catch (FormatException) //ловим ошибку дешифровки при повреждении последней сессии и выполняем...
+                        {
+                            MessageBox.Show("Последняя сессия повреждена! Выполните повторный импорт файла.");
+                            t--; //фикс счетчика, магия, не иначе
+                        }
+                        t++; //счетчик кол-ва почт в прочитанном файле
+                    }
+                }
                 while (s != i)
                 {
-                    if (s != i - 1) //fix последней пустой строки
+                    if (s != i - 1 || t != 0) //fix последней пустой строки
                     {
                         textBox2.Text = textBox2.Text + emails[s] + "\r\n"; //заносим в текстбокс для просмотра
                     }
                     else
                     {
                         textBox2.Text = textBox2.Text + emails[s]; //заносим в текстбокс последнее значение, без специальных ключей сноса строки
+                    }
+                    s++; //счетчик значений текстбокса
+                }
+                s = 0; //сброс счетчика для телефонов
+                while (s != t)
+                {
+                    if (s != t - 1) //fix последней пустой строки
+                    {
+                        textBox2.Text = textBox2.Text + tels[s] + "\r\n"; //заносим в текстбокс для просмотра
+                    }
+                    else
+                    {
+                        textBox2.Text = textBox2.Text + tels[s]; //заносим в текстбокс последнее значение, без специальных ключей сноса строки
                     }
                     s++; //счетчик значений текстбокса
                 }
@@ -217,10 +295,20 @@ namespace CorpMail
                         match = match.NextMatch(); //переход к следующему спарсенному значению
                         i++; //счетчик кол-ва почт в прочитанном файле
                     }
+
+                    Regex regex2 = new Regex(@"9+[0-9]{9}"); //парсер телефонов с любого файла, маска 9xxxxxxxxx
+                    Match match2 = regex2.Match(file); //парсим
+                    while (match2.Success) //пока парсится, делаем...
+                    {
+                        tels.Add(match2.Value); //заносим спарсенное в глобал лист
+                        match2 = match2.NextMatch(); //переход к следующему спарсенному значению
+                        t++; //счетчик кол-ва телефонов в прочитанном файле
+                    }
+
                 }
                 while (s != i) //пока кол-во спарсенных значений не равно счетчику почт занесенных в текстбокс
                 {
-                    if (s != i-1) //fix последней пустой строки
+                    if (s != i-1 || t != 0) //fix последней пустой строки
                     {
                         textBox2.Text = textBox2.Text + emails[s] + "\r\n"; //заносим в текстбокс для просмотра
                     }
@@ -230,10 +318,23 @@ namespace CorpMail
                     }
                     s++; //счетчик значений текстбокса
                 }
+                s = 0; //сброс счетчика для значений телефона
+                while (s != t) //пока кол-во спарсенных значений не равно счетчику телефонов занесенных в текстбокс
+                {
+                    if (s != t - 1) //fix последней пустой строки
+                    {
+                        textBox2.Text = textBox2.Text + tels[s] + "\r\n"; //заносим в текстбокс для просмотра
+                    }
+                    else
+                    {
+                        textBox2.Text = textBox2.Text + tels[s]; //заносим в текстбокс последнее значение, без специальных ключей сноса строки
+                    }
+                    s++; //счетчик значений текстбокса
+                }
             }
             if (textBox2.Text == null || textBox2.Text == "" || textBox2.Text == "\r\n") //если не было найдено ни одной почти в сессии или после парсинга
             {
-                MessageBox.Show("Не было найдено ни одной электронной почты!");
+                MessageBox.Show("Не было найдено ни одного получателя!");
             }
             else
             {
@@ -335,12 +436,39 @@ namespace CorpMail
         private void Form3_Load(object sender, EventArgs e) //жуткий костыль, ибо было лень гуглить
         {
             string curDir = Directory.GetCurrentDirectory();
-            string checkpath = String.Format(@"{0}\last_" + Form2.index + ".session", curDir); //init путь для сохранененной сессии
+            string checkpath = String.Format(@"{0}\last_email_" + Form2.index + ".session", curDir); //init путь для сохранененной сессии
             if (!File.Exists(checkpath)) //если последняя сессия отсутствует, то..
             {
                 comboBox1.Items.Clear(); //убираем все в комбобоксе и..
                 comboBox1.Items.Add("Импорт файла"); //..оставляем только импорт
             }
+        }
+
+        private static string POST(string Url, string Data)
+        {
+            WebRequest req = System.Net.WebRequest.Create(Url);
+            req.Method = "POST";
+            req.Timeout = 100000;
+            req.ContentType = "application/x-www-form-urlencoded";
+            byte[] sentData = UTF8Encoding.UTF8.GetBytes(Data);
+            req.ContentLength = sentData.Length;
+            Stream sendStream = req.GetRequestStream();
+            sendStream.Write(sentData, 0, sentData.Length);
+            sendStream.Close();
+            WebResponse res = req.GetResponse();
+            Stream ReceiveStream = res.GetResponseStream();
+            StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
+            //Кодировка указывается в зависимости от кодировки ответа сервера
+            Char[] read = new Char[256];
+            int count = sr.Read(read, 0, 256);
+            string Out = String.Empty;
+            while (count > 0)
+            {
+                String str = new String(read, 0, count);
+                Out += str;
+                count = sr.Read(read, 0, 256);
+            }
+            return Out;
         }
 
     }

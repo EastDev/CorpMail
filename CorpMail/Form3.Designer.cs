@@ -137,7 +137,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(121, 47);
             this.button1.TabIndex = 2;
-            this.button1.Text = "Редактор HTML-кода";
+            this.button1.Text = "Визуальный редактор";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -151,7 +151,7 @@
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox1.Size = new System.Drawing.Size(488, 122);
             this.textBox1.TabIndex = 5;
-            this.textBox1.Text = "Текст сообщения или HTML-код...";
+            this.textBox1.Text = "Текст сообщения...";
             // 
             // timer1
             // 
@@ -220,11 +220,11 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(231, 74);
+            this.label1.Location = new System.Drawing.Point(272, 75);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(193, 13);
+            this.label1.Size = new System.Drawing.Size(113, 13);
             this.label1.TabIndex = 12;
-            this.label1.Text = "Список адресов электронной почты:";
+            this.label1.Text = "Список получателей:";
             this.label1.Visible = false;
             // 
             // Form3

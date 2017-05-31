@@ -108,11 +108,11 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(265, 480);
+            this.label1.Location = new System.Drawing.Point(251, 482);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(122, 13);
+            this.label1.Size = new System.Drawing.Size(149, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "© 2016, EastDev Group";
+            this.label1.Text = "© 2016-2017, EastDev Group";
             // 
             // label2
             // 
