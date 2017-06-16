@@ -4,7 +4,7 @@ using System.Runtime.InteropServices; //либа, управляющая дви�
 
 namespace CorpMail
 {
-    public partial class Form5 : Form
+    public partial class Form7 : Form
     {
         public const int WM_NCLBUTTONDOWN = 0xA1; //двигаем форму
         public const int HT_CAPTION = 0x2; //двигаем форму
@@ -12,7 +12,7 @@ namespace CorpMail
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam); //двигаем форму
         [DllImportAttribute("user32.dll")] //двигаем форму
         public static extern bool ReleaseCapture(); //двигаем форму
-        public Form5()
+        public Form7()
         {
             InitializeComponent();
         }
@@ -56,9 +56,9 @@ namespace CorpMail
             pictureBox3.Image = CorpMail.Properties.Resources.minus;
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e) //пасхалка, когда нечего делать
+        private void Form7_Load(object sender, EventArgs e)
         {
-            MessageBox.Show("За время разработки данного приложения, оно было скомпилированно и собрано 3119 раз, было выпито 113 чашек кофе, съедено 501 печенье и проведено с пользой аж 20 ночей!", "Пасхалка, однако!");
+            textBox2.Text = Form3.history;
         }
     }
 }

@@ -14,3 +14,20 @@ C:\Users\mkhnk\Desktop\CorpMail-master\CorpMail\obj\Debug\CorpMail.Properties.Re
 C:\Users\mkhnk\Desktop\CorpMail-master\CorpMail\obj\Debug\CorpMail.csproj.GenerateResource.Cache
 C:\Users\mkhnk\Desktop\CorpMail-master\CorpMail\obj\Debug\CorpMail.exe
 C:\Users\mkhnk\Desktop\CorpMail-master\CorpMail\obj\Debug\CorpMail.pdb
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\bin\Debug\CorpMail.exe.config
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.exe
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.pdb
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\bin\Debug\Руководство пользователя.html
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\bin\Debug\CorpMail.exe
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\bin\Debug\CorpMail.pdb
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\bin\Debug\Zender.Mail.dll
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.csprojResolveAssemblyReference.cache
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.Form1.resources
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.Form2.resources
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.Form3.resources
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.Form4.resources
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.Form5.resources
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.Form6.resources
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.Properties.Resources.resources
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.csproj.GenerateResource.Cache
+C:\Users\mkhnk\Desktop\CorpMail-master (1)\CorpMail-master\CorpMail\obj\Debug\CorpMail.Form7.resources

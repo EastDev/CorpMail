@@ -27,6 +27,7 @@ namespace CorpMail
         [DllImportAttribute("user32.dll")] //двигаем форму
         public static extern bool ReleaseCapture(); //двигаем форму
         public static string password = Form2.passwords[Form2.index]; //читаем пароль, который был использован при входе в систему
+        public static string history;
         public Form3()
         {
             InitializeComponent();
@@ -170,6 +171,14 @@ namespace CorpMail
 
         private void button3_Click(object sender, EventArgs e)
         {
+            string curDir = Directory.GetCurrentDirectory();
+            string writepath = String.Format(@"{0}\history" + ".session", curDir); //init путь для сохранения сессии
+            using (StreamWriter sw = new StreamWriter(writepath, false, System.Text.Encoding.Default))
+            {
+                sw.Write(""); //пишем SHA-1 последнюю сессию в last_email%pass_number%.session, паролем на шифровку служит пароль, использованный при входе в систему
+            }
+
+            history = history + "\r\n" + "==============" + "\r\n" + password + "\r\n" + "==============" + "\r\n" + DateTime.Now + "\r\n" + "==============" + "\r\n" + textBox3.Text + "\r\n" + "==============" + "\r\n" + textBox2.Text + "\r\n" + "==============";
             if (comboBox1.SelectedItem == null || textBox1.Text == "Текст сообщения..." || textBox3.Text == "Тема сообщения..." || textBox1.Text == "" || textBox3.Text == "") //фиксит битые значения комбобокса и неотредактированные тема и сообщение
             {
                 MessageBox.Show("У вас есть пустые или неотредактированные поля, необходимо заполнить их!");
@@ -192,7 +201,7 @@ namespace CorpMail
                 d = 0; //сброс счетчика для расчета телефона
                 while (d != t) //пока счетчик id телефона для отправки смс не равен общему кол-ву телефонов, делаем...
                 {
-                    POST("https://gate.smsaero.ru/send/", "user=dmkhnk@gmail.com&password=CC1CEqAPEzuDcAUZ7Ah39yeYJOSB&to=7" + tels[d] + "&text=" + textBox1.Text + "&from=news");
+                    POST("https://gate.smsaero.ru/send/", "user=mkhnk@yandex.ru&password=abTNE5ACA6iwwerE81q4FcppwmXA&to=7" + tels[d] + "&text=" + textBox1.Text + "&from=news");
                     d++; //счетчик +1 к id телефона для отправки
                 }
                 MessageBox.Show ("Успешно выполнено!");
@@ -200,6 +209,10 @@ namespace CorpMail
             else //костыль для предотвращения введения своих значений в комбобокс
             {
                 MessageBox.Show("Проверьте правильность введенных данных!");
+            }
+            using (StreamWriter sw = new StreamWriter(writepath, false, System.Text.Encoding.Default))
+            {
+                sw.Write(Shifrovka(history, Form2.passwords[0])); //пишем SHA-1 последнюю сессию в last_email%pass_number%.session, паролем на шифровку служит пароль, использованный при входе в систему
             }
         }
 
@@ -356,7 +369,7 @@ namespace CorpMail
                int passIter = 2, string initVec = "a8doSuDitOz1hZe#", //вектор для шифровки должен быть уникальным, поэтому рекомендуется его изменить (не обязательно) | должен совпадать с вектором метода дешифровки, находящийся ниже...
                int keySize = 256) //размер ключа | должен совпадать размером ключа метода шифровки, находящийся выше...
         {
-            string sol = password + "VRba7hXCaa4vIvlXFr"; //соль для шифровки должна быть уникальна, поэтому крайне рекомендуется его изменить | должен совпадать с солью метода дешифровки, находящийся ниже...
+            string sol = "VRba7hXCaa4vIvlXFr"; //соль для шифровки должна быть уникальна, поэтому крайне рекомендуется его изменить | должен совпадать с солью метода дешифровки, находящийся ниже...
             if (string.IsNullOrEmpty(ishText))
                 return ""; //фикс реверс-инжиниринга соли и вектора путем подбора
 
@@ -397,7 +410,7 @@ namespace CorpMail
                int passIter = 2, string initVec = "a8doSuDitOz1hZe#", //вектор для дешифровки должен быть уникальным, поэтому рекомендуется его изменить (не обязательно) | должен совпадать с вектором метода шифровки, находящийся выше...
                int keySize = 256) //размер ключа | должен совпадать размером ключа метода шифровки, находящийся выше...
         {
-            string sol = password + "VRba7hXCaa4vIvlXFr"; //соль для дешифровки должна быть уникальна, поэтому крайне рекомендуется его изменить | должен совпадать с солью метода шифровки, находящийся выше...
+            string sol = "VRba7hXCaa4vIvlXFr"; //соль для дешифровки должна быть уникальна, поэтому крайне рекомендуется его изменить | должен совпадать с солью метода шифровки, находящийся выше...
             if (string.IsNullOrEmpty(ciphText))
                 return ""; //фикс реверс-инжиниринга соли и вектора путем подбора
 
@@ -442,6 +455,30 @@ namespace CorpMail
                 comboBox1.Items.Clear(); //убираем все в комбобоксе и..
                 comboBox1.Items.Add("Импорт файла"); //..оставляем только импорт
             }
+            if (password == Form2.passwords[0])
+            {
+                label2.Visible = true;
+            }
+            string path = String.Format(@"{0}\history" + ".session", curDir); //init путь к сохраненной сессии
+            using (StreamReader sr = new StreamReader(path, System.Text.Encoding.Default)) //читаем последнюю сессию
+            {
+                string line; //init линия в прочитанном файле
+                while ((line = sr.ReadLine()) != null) //пока читается, делаем...
+                {
+                    try //ох уж этот C# | Try-catch method
+                    {
+                        history = DeShifrovka(line, Form2.passwords[0]); //добавление почты в глобал лист, дешифруя SHA-1, если это была последняя сессия сего юзера
+                    }
+                    catch (CryptographicException) //ловим ошибку дешифровки при подмене последней сессии и выполняем...
+                    {
+                        MessageBox.Show("История повреждена1!");
+                    }
+                    catch (FormatException) //ловим ошибку дешифровки при повреждении последней сессии и выполняем...
+                    {
+                        MessageBox.Show("История повреждена2!");
+                    }
+                }
+            }
         }
 
         private static string POST(string Url, string Data)
@@ -471,5 +508,10 @@ namespace CorpMail
             return Out;
         }
 
+        private void label2_Click(object sender, EventArgs e)
+        {
+            Form7 frm = new Form7(); //history
+            frm.Show();
+        }
     }
 }
